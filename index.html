@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Crawler</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="mainMenu">
+        <h1> Dungeons</h1>
+            <button id="new"> New Game </button>
+            <button id="load"> Continue </button>
+    </div>
+
+<div id="gameScreen">
+
+    <div id="pause">
+        <h2>Game Paused</h2>
+            <button id="resume"> Resume </button>
+            <button id="quit"> Quit </button>
+    </div>
+
+    <div id="over">
+        <h2>Game Over</h2>
+          <p id="lives"></p>
+            <button id="cont"> Continue </button>
+            <button id="mainMenu"> Quit to Main Menu </button>
+    </div>
+
+    <div id="victory">
+        <h2>Dungeon Complete</h2>
+            <button id="nextLevel">Next Level</button>
+    </div>
+
+    <div id="hud">
+        <div id="health"> Health: <span id="hValue"> 100 </span> </div>
+        <div id="lives"> Lives: <span id="lValue"> 3 </span> </div>
+        <div id="level"> Level: <span id="levelValue"> 1 </span> </div>
+        <div id="compass"> Facing: <span id="compValue"> North </span> </div>
+        <button id="pauseBtn"> Pause </button>
+    </div>
+
+    <div id="interface">
+        <div id="messageLog"></div>
+        <div id="combat">
+            <h3>An Enemy!</h3>
+                <div id="enemy"></div>
+                    <button class="combatBtn" id="atk"> Attack </button>
+                    <button class="combatBtn" id="def"> Defend </button>
+                    <button class="combatBtn" id="run"> Flee </button>
+        </div>
+
+        <div id="move">
+            <div id="dPad">
+                <button id="fwd" class="padTop"> Move Forward </button>
+                <div class="padMid">
+                    <button id="left" class="padLeft"> Turn Left </button>
+                    <button id="right" class="padRight"> Turn Right </button>
+                </div>
+                <button id="bwd" class="padBtm"> Move Backwards </button>
+            </div>
+        </div>
+
+        <div id="map">
+            <h3>Map</h3>
+                <div id="mini"></div>        
+        </div>
+    </div>
+
+
+</div>
+    
+</body>
+</html>
