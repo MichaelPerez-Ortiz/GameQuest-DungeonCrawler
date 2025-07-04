@@ -44,33 +44,43 @@
         <button id="pauseBtn"> Pause </button>
     </div>
 
-    <div id="interface">
-        <div id="messageLog"></div>
-        <div id="combat">
-            <h3>An Enemy!</h3>
-                <div id="enemy"></div>
-                    <button class="combatBtn" id="atk"> Attack </button>
-                    <button class="combatBtn" id="def"> Defend </button>
-                    <button class="combatBtn" id="run"> Flee </button>
-        </div>
-
-        <div id="move">
-            <div id="dPad">
-                <button id="fwd" class="padTop"> Move Forward </button>
-                <div class="padMid">
-                    <button id="left" class="padLeft"> Turn Left </button>
-                    <button id="right" class="padRight"> Turn Right </button>
-                </div>
-                <button id="bwd" class="padBtm"> Move Backwards </button>
+    <div id="visuals">
+            <div id="views">
+                <div id="lView" class="view"></div>
+                <div id="fView" class="view"></div>
+                <div id="rView" class="view"></div>
             </div>
+        
+
+        <div id="interface">
+            <div id="messageLog"></div>
+            <div id="combat">
+                <h3>An Enemy!</h3>
+                    <div id="enemy"></div>
+                        <button class="combatBtn" id="atk"> Attack </button>
+                        <button class="combatBtn" id="def"> Defend </button>
+                        <button class="combatBtn" id="run"> Flee </button>
+            </div>
+
+            <div id="move">
+                <div id="dPad">
+                    <button id="fwd" class="padTop"> Move Forward </button>
+                    <div class="padMid">
+                        <button id="left" class="padLeft"> Turn Left </button>
+                        <button id="right" class="padRight"> Turn Right </button>
+                    </div>
+                    <button id="bwd" class="padBtm"> Move Backwards </button>
+                </div>
+            </div>
+
+            <div id="map">
+                <h3>Map</h3>
+                    <div id="mini"></div>        
+            </div>
+            
         </div>
 
-        <div id="map">
-            <h3>Map</h3>
-                <div id="mini"></div>        
-        </div>
     </div>
-
 
 </div>
     
