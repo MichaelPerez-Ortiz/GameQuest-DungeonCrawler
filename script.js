@@ -38,7 +38,7 @@ document.getElementById("run").addEventListener("click" , () => performAction("f
 
 const gameState = {
 
-    currenScreen: "mainMenu" ,
+    currentScreen: "mainMenu" ,
     isPaused: false , 
     gameOver: false ,
     level: 1 ,
@@ -415,3 +415,111 @@ function renderView(container , position , isForward) {
     }
 }
 
+//Menus
+
+function checkSavedGame() {
+    const savedGame = localStorage.getItem("gameSave");
+
+        if(savedGame) {
+            gameState.savedGame = JSON.parse(savedGame);
+            document.getElementById("load").disabled = false;
+        } else {
+            document.getElementById("load").disabled = true;
+        }
+}
+
+function newGame() {
+    gameState.level = 1;
+    gameState.health = 100;
+    gameState.lives = 3;
+    gameState.playerDirection = 2;
+    gameState.inCombat = false;
+    gameState.discovered = [];
+    gameState.visited = [];
+
+    localStorage.removeItem("gameSave");
+    gameState.savedGame = null;
+
+    generateDungeon();
+    showGameScreen();
+    savedGame();
+}
+
+function showGameScreen() {
+    gameState.isPaused = false;
+    mainMenu.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    pauseMenu.classList.add("hidden");
+
+    updateHUD();
+    renderViews();
+    updateMap();
+    addMessage("You Enter the Dungeon...")
+}
+
+function loadGame() {
+    if(gameState.savedGame) {
+        Object.assign(gameState , gameState.savedGame);
+
+    if(!gameState.discovered)gameState.discovered = [];
+    if(!gameState.visited)gameState.visited = [];
+
+    gameState.inCombat = false;
+    gameState.currentEnemy = null;
+
+    combatMenu.classList.add("hidden");
+    pauseMenu.classList.add("hidden");
+
+    showGameScreen();
+    addMessage("Game Loaded");
+
+    renderViews();
+    updateHUD();
+    updateMap();
+    }
+}
+
+function togglePause() {
+    gameState.isPaused = !gameState.isPaused;
+    pauseMenu.classList.toggle("hidden" , !gameState.isPaused);
+    gameScreen.classList.toggle("blurred" , gameState.isPaused);
+
+    if(!gameState.isPaused) {
+        saveGame();
+        addMessage("Game Saved");
+        renderViews();
+        updateHUD();
+        updateMap();
+    }
+}
+
+function saveGame() {
+    const saveData = {
+
+        level: gameState.level ,
+        health: gameState.health ,
+        lives: gameState.lives ,
+        playerDirection: gameState.playerDirection ,
+        dungeon: gameState.dungeon ,
+        playerPosition: gameState.playerPosition ,
+        exitPosition: gameState.exitPosition ,
+        discovered: gameState.discovered ,
+        visited: gameState.visited
+    };
+
+    localStorage.setItem("gameSave" , JSON.stringify(saveData));
+    gameState.savedGame = saveData;
+    addMessage("Game Saved");
+}
+
+function quitToMenu() {
+    saveGame();
+
+        gameScreen.classList.add("hidden");
+        mainMenu.classList.remove("hidden");
+        pauseMenu.classList.add("hidden");
+        gameOverMenu.classList.add("hidden");
+        victoryMenu.classList.add("hidden");
+
+    checkSavedGame();
+}
