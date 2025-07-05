@@ -523,3 +523,80 @@ function quitToMenu() {
 
     checkSavedGame();
 }
+
+
+//Movement
+
+
+function movePosition(newPos) {
+    if(newPos.x < 0 || newPos.y < 0 || newPos.y >= gameState.dungeon.length || newPos.x >= gameState.dungeon[0].length) {
+        addMessage("You Cannot Walk Through Walls");
+        return
+    }
+
+    const cellValue = gameState.dungeon[newPos.y][newPos.x];
+
+    switch(cellValue) {
+
+        case 0:
+            gameState.playerPosition = newPos;
+            markVisited(newPos.x , newPos.y);
+            addMessage("You Move Forward");
+            break;
+
+        case 1:
+            addMessage("You Cannot Walk Through Walls");
+            break;
+
+        case 2:
+            startCombat(newPos);
+            break;
+
+        case 3:
+            gameState.playerPosition = newPos;
+            markVisited(newPos.x , newPos.y);
+            gameState.dungeon[newPos.y][newPos.x] = 0;
+            gameState.health = Math.min(gameState.health + 30 , gameState.maxHealth);
+            addMessage("You Drink a Health Potion Restoring 30 Health");
+            break;
+
+        case 4:
+            gameState.playerPosition = newPos;
+            markVisited(newPos.x, newPos.y);
+            levelComplete();
+            break;
+    }
+
+    updateHUD();
+    renderViews();
+}
+
+
+
+function moveForward() {
+    if(gameState.isPaused || gameState.inCombat) 
+        return;
+
+    const newPos = getDirection(gameState.playerDirection);
+    movePosition(newPos);
+}
+
+function moveBackward() {
+    if(gameState.isPaused || gameState.inCombat) 
+        return;
+
+    const OppDir = (gameState.playerDirection + 2) % 4 ;
+    const newPos = getDirection(OppDir);
+    movePosition(newPos);
+}
+
+function turn(direction) {
+    if(gameState.isPaused || gameState.inCombat)
+        return;
+
+    gameState.playerDirection = (gameState.playerDirection + direction + 4) % 4;
+    addMessage(`You Turn to Face ${directions[gameState.playerDirection]}`);
+ 
+    updateHUD();
+    renderViews();
+}
