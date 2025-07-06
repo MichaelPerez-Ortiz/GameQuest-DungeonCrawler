@@ -1,44 +1,83 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Arial" , sans-serif;
-  background-color: #111;
+  font-family: 'Arial', sans-serif;
+  background-color: #222;
   color: #eee;
   height: 100vh;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0.8);
+  transform-origin: center;
 }
 
-
 .screen {
+     width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
+  z-index: 100;
 }
 
+.overlay h2 {
+  color: #c00;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.overlay button {
+  background-color: #444;
+  color: #eee;
+  border: 2px solid #c00;
+  padding: 0.8rem 1.5rem;
+  margin: 0.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+.overlay button:hover {
+  background-color: #c00;
+  color: #fff;
+}
+
+.hidden {
+    display: none !important;
+}
 
 #gameScreen {
-  background-color: #111;
+    background-color: #111;
+    position: relative;
+    padding: 1rem;
 }
 
-
-/* Main Menu  */
-
+/* Main Menu */
 #mainMenu {
-  background-color: #222;
-  z-index: 100;
+   padding: 2rem;
+  background-color: #333;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 #mainMenu h1 {
   font-size: 3rem;
   color: #c00;
   text-shadow: 2px 2px 4px #000;
-  margin-bottom: 2rem;
 }
 
 #mainMenu button {
@@ -51,266 +90,263 @@ body {
   cursor: pointer;
   border-radius: 5px;
   transition: all 0.3s;
-  width: 200px;
 }
 
 #mainMenu button:hover {
-  background-color: #c00;
+   background-color: #c00;
+}
+
+#mainMenu button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#mainMenu button[disabled]:hover {
+    background-color: #444;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Pause/Game Over/Victory Menus */
-
 #pause,
 #over,
 #victory {
-  background-color: rgba(0 , 0 , 0 , 0.8);
-  z-index: 200;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 200;
 }
-
 
 #pause h2,
 #over h2,
 #victory h2 {
-  color: #c00;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
+    color: #c00;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 #pause button,
 #over button,
 #victory button {
-  background-color: #444;
-  color: #eee;
-  border: 2px solid #c00;
-  padding: 0.8rem 1.5rem;
-  margin: 0.5rem;
-  font-size: 1.2rem;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 200px;
+    background-color: #444;
+    color: #eee;
+    border: 2px solid #c00;
+    padding: 0.8rem 1.5rem;
+    margin: 0.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 200px;
 }
 
 #pause button:hover,
 #over button:hover,
 #victory button:hover {
-  background-color: #c00;
+    background-color: #c00;
 }
 
-/* HUD  */
+/* HUD */
 #hud {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  display: flex;
+ display: flex;
   justify-content: space-between;
-  background-color: rgba(0 , 0 , 0 , 0.7);
-  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
   border-radius: 5px;
-  z-index: 50;
+  margin-bottom: 1rem;
 }
 
 #hud div {
-  margin: 0 10px;
+    margin: 0 0.5rem;
 }
 
 #pauseBtn {
-  background-color: #444;
-  color: #eee;
-  border: 1px solid #c00;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 3px;
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #c00;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    border-radius: 3px;
 }
 
 #pauseBtn:hover {
-  background-color: #c00;
+    background-color: rgb(167, 5, 5);
 }
 
-/*  Views */
-
+/* Views */
 #visuals {
-  position: absolute;
-  top: 70px;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 #views {
-  display: flex;
-  height: 60%;
-  gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    height: 300px;
 }
 
 .view {
-  flex: 1;
-  border: 2px solid #333;
-  background-color: #000;
-  position: relative;
-  overflow: hidden;
+    flex: 1;
+    border: 2px solid #555;
+    margin: 0 0.5rem;
+    background-color: #111;
+    position: relative;
+    overflow: hidden;
+    perspective: 1000px;
 }
 
 #fView {
-  flex: 2;
+    flex: 2;
 }
 
-/* Interface  */
-
+/* Interface */
 #interface {
-  display: flex;
-  flex-direction: column;
-  height: 40%;
-  margin-top: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  border-radius: 5px;
 }
 
 #messageLog {
-  flex: 1;
-  background-color: #000;
-  border: 1px solid #333;
-  padding: 10px;
+ height: 100px;
   overflow-y: auto;
-  font-family: monospace;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #111;
+  border: 1px solid #333;
 }
 
-#combat {
-  display: none;
-  background-color: rgba(0 , 0 , 0 , 0.7);
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-
-#combat h3 {
-  color: #c00;
-  margin-top: 0;
-}
 
 .combatBtn {
-  background-color: #333;
+    background-color: #333;
   color: #eee;
   border: 1px solid #c00;
-  padding: 8px 15px;
-  margin: 5px;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
   cursor: pointer;
   border-radius: 3px;
 }
 
 .combatBtn:hover {
-  background-color: #c00;
+    background-color: rgb(167, 5, 5);
 }
 
 /* Movement Controls */
 
 #move {
+  margin-top: 1rem;
+  position: relative;
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  padding: 20px;
 }
 
 #dPad {
-  display: grid;
-  grid-template-areas:
-    ". top ."
-    "left . right"
-    ". bottom .";
+   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  background: rgba(50, 50, 50, 0.5);
+  border-radius: 50%;
+  padding: 30px;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.padTop , .padBtm { 
+    width: 100px;
+}
+
+.padMid {
+    display: flex;
+  justify-content: center;
   gap: 5px;
 }
 
-.padTop { grid-area: top; }
-.padLeft { grid-area: left; }
-.padRight { grid-area: right; }
-.padBtm { grid-area: bottom; }
-.padMid { 
-  grid-area: mid;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
+.padRight , .padLeft{
+    width: 100px;
 }
 
 #dPad button {
   background-color: #333;
   color: #eee;
   border: 1px solid #0a0;
-  padding: 10px;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
   cursor: pointer;
-  min-width: 80px;
-  text-align: center;
+  padding: 0.8rem 0;
+  margin: 0;
+  font-size: 1rem;
 }
 
 #dPad button:hover {
-  background-color: #0a0;
+    background-color: rgb(2, 127, 2);
 }
 
-/* Map  */
-
+/* Map */
 #map {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+    margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
 }
 
-#map h3 {
-  margin: 0 0 5px 0;
-  color: #0af;
-}
+/* #map h3 {
+    margin: 0 0 5px 0;
+    color: #0af;
+} */
 
 #mini {
-  flex: 1;
-  background-color: #000;
-  border: 1px solid #333;
-  padding: 5px;
-  overflow: auto;
+    display: inline-block;
+  margin-top: 0.5rem;
 }
 
 .mapRow {
-  display: flex;
+    display: flex;
 }
 
 .mapCell {
-  width: 20px;
+   width: 20px;
   height: 20px;
-  border: 1px solid #111;
-  font-size: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 1px solid #333;
+  box-sizing: border-box;
 }
 
 .mapCell.unknown {
-  background-color: #000;
+    background-color: #000;
 }
 
 .mapCell.discovered {
-  background-color: #222;
+    background-color: #222;
 }
 
 .mapCell.current {
-  background-color: #0a0;
+    background-color: #0a0;
 }
 
 .mapCell.wall {
-  background-color: #c00;
+    background-color: #c00;
 }
 
 .mapCell.exit {
-  background-color: #00a;
+    background-color: #00a;
 }
 
-
-
-
-/* 3D */
-
+/* 3D Elements */
 .perspective {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  perspective: 1000px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    perspective: 1000px;
 }
 
 .three-d-wall,
@@ -322,47 +358,58 @@ body {
 .three-d-item-side,
 .three-d-exit-forward,
 .three-d-exit-side {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transform-style: preserve-3d;
-  transition: all 0.3s;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transform-style: preserve-3d;
+    transition: all 0.3s;
 }
 
 .three-d-corridor-forward {
-  transform: translateZ(50px);
-  background: linear-gradient(to bottom, #111, #000);
+    transform: translateZ(50px);
+    background: linear-gradient(to bottom, #111, #000);
 }
 
 .three-d-corridor-side {
-  transform: rotateY(90deg) translateZ(100px);
-  background: linear-gradient(to bottom, #111, #000);
+    transform: rotateY(90deg) translateZ(100px);
+    background: linear-gradient(to bottom, #111, #000);
 }
 
 .three-d-wall {
-  transform: translateZ(0);
+    transform: translateZ(0);
+    background-color: #333;
 }
 
 .three-d-enemy-forward {
-  transform: translateZ(80px) scale(1.2);
-  background-size: contain;
-  background-repeat: no-repeat;
+    transform: translateZ(80px) scale(1.2);
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .three-d-enemy-side {
-  transform: rotateY(90deg) translateZ(120px) scale(0.8);
-  background-size: contain;
-  background-repeat: no-repeat;
+    transform: rotateY(90deg) translateZ(120px) scale(0.8);
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .three-d-item-forward,
 .three-d-exit-forward {
-  transform: translateZ(70px);
+    transform: translateZ(70px);
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .three-d-item-side,
 .three-d-exit-side {
-  transform: rotateY(90deg) translateZ(110px);
+    transform: rotateY(90deg) translateZ(110px);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* Blur effect for pause */
+.blurred {
+    filter: blur(2px);
+    opacity: 0.7;
 }

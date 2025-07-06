@@ -110,6 +110,8 @@ updateMap();
 
 }
 
+checkSavedGame();
+
 function getDirection(direction) {
     const directions = [
         {x: 0 , y: -1} , //North
@@ -211,35 +213,35 @@ function updateMap() {
     miniMap.innerHTML = "";
 
     gameState.dungeon.forEach((row , y) => {
-        const rowEL = document.createElement("div");
-        rowEL.className = "mapRow";
+        const rowEl = document.createElement("div");
+        rowEl.className = "mapRow";
     
 
     row.forEach((cell , x) => {
-        const cellEL = document.createElement("div");
-        cellEL.className = "mapCell";
+        const cellEl = document.createElement("div");
+        cellEl.className = "mapCell";
 
             if(!gameState.discovered[y][x]) {
-                cellEL.classList.add("unknown");
+                cellEl.classList.add("unknown");
 
             } else {
                 
-                cellEL.classList.add("discovered");
+                cellEl.classList.add("discovered");
 
             if(x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
-                cellEL.classList.add("current");
+                cellEl.classList.add("current");
 
             } else if (cell === 1) {
-                cellEL.classList.add("wall");
+                cellEl.classList.add("wall");
 
             } else if (cell === 4) {
-                cellEL.classList.add("exit");
+                cellEl.classList.add("exit");
             }
         }
 
-        rowEL.appendChild(cellEl);
+        rowEl.appendChild(cellEl);
         });
-        miniMap.appendChild(rowEL)
+        miniMap.appendChild(rowEl)
     });
 }
 
@@ -357,6 +359,8 @@ function exitTexture() {
     return canvas.toDataURL();
 }
 
+checkSavedGame();
+
 //Visuals
 
 function renderView(container , position , isForward) {
@@ -441,15 +445,24 @@ function newGame() {
     gameState.savedGame = null;
 
     generateDungeon();
-    showGameScreen();
-    savedGame();
+    updateMap();
+
+    setTimeout(() => {
+        showGameScreen();
+        saveGame();
+        checkSavedGame();
+    }, 100); 
 }
+
 
 function showGameScreen() {
     gameState.isPaused = false;
     mainMenu.classList.add("hidden");
     gameScreen.classList.remove("hidden");
     pauseMenu.classList.add("hidden");
+    gameOverMenu.classList.add("hidden");
+    victoryMenu.classList.add("hidden");
+    
 
     updateHUD();
     renderViews();
@@ -595,8 +608,121 @@ function turn(direction) {
         return;
 
     gameState.playerDirection = (gameState.playerDirection + direction + 4) % 4;
-    addMessage(`You Turn to Face ${directions[gameState.playerDirection]}`);
+    addMessage(`You Turn ${directions[gameState.playerDirection]}`);
  
     updateHUD();
     renderViews();
 }
+
+//Combat
+
+function startCombat(position) {
+    gameState.inCombat = true;
+    combatMenu.classList.remove("hidden");
+
+    gameState.currentEnemy = {
+        type: ["Goblin" , "Skeleton" , "Orc" , "Spider"][Math.floor(Math.random() * 4)] ,
+        health: 30 + gameState.level * 10 ,
+        maxHealth: 30 + gameState.level * 10 ,
+        attack: 5 + gameState.level * 2 ,
+        defense: 2 + gameState.level
+    };
+
+    enemyInfo.innerHTML = `
+            <p> Enemy: ${gameState.currentEnemy.type}</p>
+            <p> Health: ${gameState.currentEnemy.health} / ${gameState.currentEnemy.maxHealth}</p>`;
+
+            addMessage(`A ${gameState.currentEnemy.type} Attacks You`);
+
+}
+
+function performAction(action) {
+    if(!gameState.inCombat)
+        return;
+
+    let playerDamage = 0;
+    let enemyDamage = 0;
+
+    switch(action) {
+
+        case "attack":
+            playerDamage = Math.max(5 + Math.floor(Math.random() * 10) - gameState.currentEnemy.defense , 1);
+            gameState.currentEnemy.health -= playerDamage;
+            addMessage(`You Attack the ${gameState.currentEnemy.type} for ${playerDamage} Damage`);
+            break;
+
+        case "defend":
+            const healAmount = Math.floor(gameState.maxHealth * 0.1);
+            gameState.health = Math.min(gameState.health + healAmount , gameState.maxHealth);
+            addMessage(`You Defend and Recover ${healAmount} Health `);
+            break;
+
+        case "flee":
+            if(Math.random() < 0.5) {
+                addMessage(`You flee from the ${gameState.currentEnemy.type}`);
+                endCombat();
+                return;
+            } else {
+                addMessage(`You Failed to Flee`);
+            }
+            break;
+    }
+
+    if(gameState.currentEnemy.health <=0) { 
+        addMessage(`You Defeated the ${gameState.currentEnemy.type}`);
+        const enemyPos = getDirection(gameState.playerDirection);
+        if(enemyPos.x >= 0 && enemyPos.y >= 0) {
+            gameState.dungeon[enemyPos.y][enemyPos.x] = 0;
+        }
+        endCombat();
+        return;
+    }
+
+    if(action !== "flee" || Math.random() >= 0.5) {
+        enemyDamage = Math.max(gameState.currentEnemy.attack - Math.floor(Math.random() * 5) , 1);
+        gameState.health -= enemyDamage;
+        addMessage(`The ${gameState.currentEnemy.type} Attacks for ${enemyDamage} Damage`);
+
+        if(gameState.health <= 0) {
+            gameState.health = 0;
+            playerDefeated();
+            return;
+        }
+    }
+
+    enemyInfo.innerHTML = `
+            <p> Enemy: ${gameState.currentEnemy.type} </p>
+            <p> Health: ${gameState.currentEnemy.health} / ${gameState.currentEnemy.maxHealth} </p>`;
+
+            updateHUD();
+}
+
+function endCombat() {
+    gameState.inCombat = false;
+    combatMenu.classList.add("hidden");
+}
+
+function playerDefeated() {
+    gameState.lives--;
+    updateHUD();
+
+    if(gameState.lives <= 0) {
+        gameOverMenu.classList.remove("hidden");
+        livesMessage.textContent = "Game Over";
+        document.getElementById("cont").disabled = true;
+    } else {
+        gameOverMenu.classList.remove("hidden");
+        livesMessage.textContent = (`You Have ${gameState.lives} Live(s) Remaining`);
+        document.getElementById("cont").disabled = false;
+    }
+}
+
+function continueDeath() {
+    gameState.health = gameState.maxHealth;
+    gameOverMenu.classList.add("hidden");
+    updateHUD();
+}
+
+
+
+updateHUD();
