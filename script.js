@@ -34,6 +34,9 @@ document.getElementById("atk").addEventListener("click" , () => performAction("a
 document.getElementById("def").addEventListener("click" , () => performAction("defend"));
 document.getElementById("run").addEventListener("click" , () => performAction("flee"));
 
+const treasureImage = new Image();
+treasureImage.src = "images/treasure.PNG";
+
 //Initial Game State
 
 const gameState = {
@@ -58,16 +61,24 @@ const gameState = {
 
 const directions = ["North" , "East" , "South" , "West"];
 
-//Art
+//Art Calls
 const assets = {
     wall: wallTexture() ,
     corridor: corridorTexture() ,
     enemy: enemyTexture() ,
     health: healthTexture() ,
+    treasure: "images/treasure.PNG" ,
     exit: exitTexture()
 };
 
-
+const testImage = new Image();
+testImage.src = assets.treasure;
+testImage.onload = function() {
+    console.log("Treasure image loaded successfully");
+};
+testImage.onerror = function() {
+    console.error("Error loading treasure image:", assets.treasure);
+};
 
 //ViewArea
 
@@ -190,6 +201,8 @@ function generateDungeon() {
 
         gameState.dungeon[gameState.playerPosition.y][gameState.playerPosition.x] = 0;
 
+    if(gameState.level !== 5) {
+        
         let exitX , exitY;
             do{
                 exitX = Math.floor(Math.random() * (finalSize - 2)) +1;
@@ -202,8 +215,26 @@ function generateDungeon() {
         gameState.exitPosition = {x: exitX , y: exitY};
         gameState.dungeon[gameState.exitPosition.y][gameState.exitPosition.x] = 4;
 
+    }
+
         markDiscovered(gameState.playerPosition.x , gameState.playerPosition.y);
         markVisited(gameState.playerPosition.x , gameState.playerPosition.y);
+
+            //Treasure Placement
+        if(gameState.level === 5) {
+            let chestX , chestY;
+            do{
+                chestX = Math.floor(Math.random() * (finalSize - 2)) +1;
+                chestY = Math.floor(Math.random() * (finalSize - 2)) +1;
+            } while (
+                (Math.abs(chestX - gameState.playerPosition.x) < 3 &&
+                Math.abs(chestY - gameState.playerPosition.y) < 3)
+             );
+
+            gameState.dungeon[chestY][chestX] = 5;
+            gameState.chestPos = {x: chestX , y: chestY};
+            
+        }
     }
 
 
@@ -211,6 +242,28 @@ function generateDungeon() {
 
 function updateMap() {
     miniMap.innerHTML = "";
+
+    const mapContainer = document.createElement("div");
+    mapContainer.className = "mapContainer";
+
+    const directions = [
+
+        { class: "north" , text: "N" , position: "top: 0; left: 50%; transform: translateX(-50%);"} ,
+        { class: "east" , text: "E" , position: "top: 50%; right: 0; transform: translateY(-50%);"} ,
+        { class: "south" , text: "S" , position: "bottom: 0; left: 50%; transform: translateX(-50%);"} ,
+        { class: "west" , text: "W" , position: "top: 50%; left: 0; transform: translateY(-50%);"}
+    ];
+
+    directions.forEach(dir => {
+        const indicator = document.createElement("div");
+        indicator.className = `dirIndicator ${dir.class}`;
+        indicator.textContent = dir.text;
+        indicator.style.cssText = dir.position;
+        mapContainer.appendChild(indicator);
+    });
+
+    const mapDir = document.createElement("div");
+    mapDir.className = "mapDir";
 
     gameState.dungeon.forEach((row , y) => {
         const rowEl = document.createElement("div");
@@ -236,13 +289,20 @@ function updateMap() {
 
             } else if (cell === 4) {
                 cellEl.classList.add("exit");
+
+            } else if (cell === 5) {
+                    cellEl.classList.add("treasure");
             }
         }
 
         rowEl.appendChild(cellEl);
         });
-        miniMap.appendChild(rowEl)
+        mapDir.appendChild(rowEl)
     });
+
+    mapContainer.appendChild(mapDir);
+
+    miniMap.appendChild(mapContainer)
 }
 
 function markDiscovered(x , y) {
@@ -416,6 +476,22 @@ function renderView(container , position , isForward) {
             view.style.backgroundImage = `url(${assets.exit})`;
             container.appendChild(view);
             break;
+
+        case 5: //Treasure
+            view.className = isForward ? "three-d-treasure-forward" : "three-d-treasure-side";
+            
+            const glowContainer = document.createElement("div");
+            glowContainer.className = "treasureGlow";
+
+            const treasureEl = document.createElement("div");
+            treasureEl.className = "treasureItem";
+            treasureEl.style.backgroundImage = `url(${assets.treasure})`;
+
+            glowContainer.appendChild(treasureEl);
+            view.appendChild(glowContainer);
+
+            container.appendChild(view);
+            break;
     }
 }
 
@@ -495,7 +571,7 @@ function loadGame() {
 function togglePause() {
     gameState.isPaused = !gameState.isPaused;
     pauseMenu.classList.toggle("hidden" , !gameState.isPaused);
-    gameScreen.classList.toggle("blurred" , gameState.isPaused);
+    // gameScreen.classList.toggle("blurred" , gameState.isPaused);
 
     if(!gameState.isPaused) {
         saveGame();
@@ -578,6 +654,11 @@ function movePosition(newPos) {
             markVisited(newPos.x, newPos.y);
             levelComplete();
             break;
+
+        case 5:
+            addMessage("You Found the Treasure. Dungeon Cleared");
+            endGame();
+            break
     }
 
     updateHUD();
@@ -704,6 +785,7 @@ function endCombat() {
         addMessage(`You Defeated the ${gameState.currentEnemy.type}`);
         renderViews();
         updateMap();
+        
 }
 
 function playerDefeated() {
@@ -742,6 +824,36 @@ function nextLevel() {
     updateHUD();
     renderViews();
     addMessage(`You Reach Floor ${gameState.level}`);
+}
+
+function endGame() {
+    gameState.inCombat = false;
+
+    const treasureFound = document.createElement("div");
+    treasureFound.className = "overlay";
+    treasureFound.id = "treasureFound"
+    treasureFound.innerHTML = `
+        <h2>You Found the Treasure</h2>
+        <h1>Dungeon Cleared</h1>
+        <button id="fin"> Congratulations </button>
+        `;
+        gameScreen.appendChild(treasureFound);
+
+    document.getElementById("fin").addEventListener("click" , () => {
+        gameScreen.classList.add("hidden");
+        mainMenu.classList.remove("hidden");
+        treasureFound.remove();
+
+    document.getElementById("fwd").disabled = false;
+    document.getElementById("bwd").disabled = false;
+    document.getElementById("left").disabled = false;
+    document.getElementById("right").disabled = false;
+    document.getElementById("pauseBtn").disabled = false;
+
+    checkSavedGame();
+ });
+
+    addMessage("You Found the Treasure. Dungeon Cleared");
 }
 
 updateHUD();

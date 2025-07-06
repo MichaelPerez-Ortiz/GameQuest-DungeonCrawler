@@ -64,6 +64,7 @@ body {
     background-color: #111;
     position: relative;
     padding: 1rem;
+    /* #c22828 */
 }
 
 
@@ -150,9 +151,20 @@ body {
 }
 
 
+/* Blur */
+
+/* .blurred {
+    filter: blur(2px);
+    opacity: 0.7;
+} */
+
+
+
 /* HUD */
 
 #hud {
+    position: sticky;
+    top: 1;
     display: flex;
     justify-content: space-between;
     background-color: rgba(0, 0, 0, 0.7);
@@ -188,24 +200,49 @@ body {
 
 #views {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 1rem;
     height: 300px;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
 }
 
 .view {
-    flex: 1;
     border: 2px solid #555;
-    margin: 0 0.5rem;
     background-color: #111;
-    position: relative;
+    position: absolute;
     overflow: hidden;
-    perspective: 1000px;
+    transform-style: preserve-3d;
+    height: 100%;
 }
 
 #fView {
-    flex: 2;
+    width: 60%;
+    z-index: 10;
+    transform: translateZ(0);
+    left: 20%;
+    border-left: none;
+    border-right: none;
 }
+
+#lView {
+    width: 20%;
+    transform-origin: right center;
+    transform: rotateY(60deg);
+    left: 0;
+    border-right: none;
+}
+
+#rView {
+    width: 20%;
+    transform-origin: left center;
+    transform: rotateY(-60deg);
+    right: 0;
+    border-left: none;
+}
+
 
 
 /* Interface */
@@ -214,6 +251,8 @@ body {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 1rem;
     border-radius: 5px;
+     /* rgba(200, 115, 115, 0.7); */
+
 }
 
 #messageLog {
@@ -350,6 +389,51 @@ body {
     background-color: #00a;
 }
 
+.mapCell.treasure {
+    background-color: orange;
+}
+
+.mapContainer {
+    position: relative;
+    display: inline-block;
+    padding: 25px;
+    margin: 10px auto;
+}
+
+.mapDir {
+    display: inline-block;
+}
+
+.dirIndicator {
+    position: absolute;
+    font-weight: bold;
+    color: #0af;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.north {
+    top: 0;
+}
+
+.south {
+    bottom: 0;
+}
+
+.east {
+    right: 0;
+}
+
+.west {
+    left: 5px;
+}
+
 
 /* 3D Elements */
 
@@ -400,7 +484,7 @@ body {
 }
 
 .three-d-enemy-side {
-    transform: rotateY(90deg) translateZ(120px) scale(0.8);
+    /* transform: rotateY(90deg) translateZ(120px) scale(0.8); */
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -414,13 +498,51 @@ body {
 
 .three-d-item-side,
 .three-d-exit-side {
-    transform: rotateY(90deg) translateZ(110px);
+    /* transform: rotateY(90deg) translateZ(110px); */
     background-size: contain;
     background-repeat: no-repeat;
 }
 
-/* Blur effect for pause */
-.blurred {
-    filter: blur(2px);
-    opacity: 0.7;
+/* Glow */
+
+.treasureGlow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(255,165,0,0.6) 0%, rgba(255,165,0,0) 70%);
+    animation: pulse 2s infinite;
 }
+
+.treasureItem {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+
+.three-d-treasure-forward {
+    transform: translateZ(70px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 165, 0, 0.2);
+}
+
+.three-d-treasure-side {
+    /* transform: rotateY(90deg) translateZ(110px); */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 165, 0, 0.2); 
+}
+
+
