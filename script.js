@@ -670,12 +670,8 @@ function performAction(action) {
 
     if(gameState.currentEnemy.health <=0) { 
         addMessage(`You Defeated the ${gameState.currentEnemy.type}`);
-        const enemyPos = getDirection(gameState.playerDirection);
-        if(enemyPos.x >= 0 && enemyPos.y >= 0) {
-            gameState.dungeon[enemyPos.y][enemyPos.x] = 0;
-        }
-        endCombat();
-        return;
+            endCombat();
+            return;
     }
 
     if(action !== "flee" || Math.random() >= 0.5) {
@@ -700,6 +696,14 @@ function performAction(action) {
 function endCombat() {
     gameState.inCombat = false;
     combatMenu.classList.add("hidden");
+
+    const enemyPos = getDirection(gameState.playerDirection);
+        if(enemyPos.x >= 0 && enemyPos.y >= 0 && enemyPos.x < gameState.dungeon[0].length && enemyPos.y < gameState.dungeon.length) {
+            gameState.dungeon[enemyPos.y][enemyPos.x] = 0;
+        }
+        addMessage(`You Defeated the ${gameState.currentEnemy.type}`);
+        renderViews();
+        updateMap();
 }
 
 function playerDefeated() {
@@ -723,6 +727,21 @@ function continueDeath() {
     updateHUD();
 }
 
+//Level End
 
+function levelComplete() {
+    addMessage(" You Found the Exit. Floor Complete");
+    victoryMenu.classList.remove("hidden");
+}
+
+function nextLevel() {
+    gameState.level++;
+    gameState.health = gameState.maxHealth;
+    victoryMenu.classList.add("hidden");
+    generateDungeon();
+    updateHUD();
+    renderViews();
+    addMessage(`You Reach Floor ${gameState.level}`);
+}
 
 updateHUD();
