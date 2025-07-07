@@ -715,8 +715,33 @@ function moveBackward() {
     if(gameState.isPaused || gameState.inCombat) 
         return;
 
-    const OppDir = (gameState.playerDirection + 2) % 4 ;
-    const newPos = getDirection(OppDir);
+    const oppDir = (gameState.playerDirection + 2) % 4 ;
+    const newPos = getDirection(oppDir);
+
+    if(newPos.x >= 0 && newPos.y >= 0 && newPos.y < gameState.dungeon.length && newPos.x < gameState.dungeon[0].length && gameState.dungeon[newPos.y][newPos.x] === 2) {
+
+        const turnDir = Math.random() < 0.5 ? "left" : "right";
+        const midTurn = turnDir === "left" ?
+            (gameState.playerDirection + 3) % 4 :
+            (gameState.playerDirection + 1) % 4;
+
+        addMessage("Somethings Behind you. You Turn")
+        gameState.playerDirection = midTurn;
+        updateHUD();
+        renderViews();
+
+    setTimeout(() => {
+
+        gameState.playerDirection = oppDir;
+        addMessage("Monster!")
+        updateHUD();
+        renderViews();
+
+        movePosition(newPos);
+    } , 200);
+        
+        return;
+    } 
     movePosition(newPos);
 }
 
