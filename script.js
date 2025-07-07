@@ -18,21 +18,22 @@ const rightView = document.getElementById("rView");
 const miniMap = document.getElementById("mini");
 
 
-document.getElementById("new").addEventListener("click" , newGame);
-document.getElementById("load").addEventListener("click" , loadGame);
-document.getElementById("pauseBtn").addEventListener("click" , togglePause);
-document.getElementById("resume").addEventListener("click" , togglePause);
-document.getElementById("quit").addEventListener("click" , quitToMenu);
-document.getElementById("cont").addEventListener("click" , continueDeath);
-document.getElementById("mainMenu").addEventListener("click" , quitToMenu);
-document.getElementById("nextLevel").addEventListener("click" , nextLevel);
-document.getElementById("fwd").addEventListener("click" , moveForward);
-document.getElementById("bwd").addEventListener("click" , moveBackward);
-document.getElementById("left").addEventListener("click" , () => turn(-1));
-document.getElementById("right").addEventListener("click" , () => turn(1));
-document.getElementById("atk").addEventListener("click" , () => performAction("attack"));
-document.getElementById("def").addEventListener("click" , () => performAction("defend"));
-document.getElementById("run").addEventListener("click" , () => performAction("flee"));
+document.getElementById("new").onclick = newGame;
+document.getElementById("pauseBtn").onclick = togglePause;
+document.getElementById("resume").onclick = togglePause;
+document.getElementById("quit").onclick = quitToMenu;
+document.getElementById("nextLevel").onclick = nextLevel;
+document.getElementById("fwd").onclick = moveForward;
+document.getElementById("bwd").onclick = moveBackward;
+document.getElementById("left").onclick = () => turn(-1);
+document.getElementById("right").onclick = () => turn(1);
+document.getElementById("atk").onclick = () => performAction("attack");
+document.getElementById("def").onclick = () => performAction("defend");
+document.getElementById("run").onclick = () => performAction("flee");
+document.getElementById("load").onclick = function() {
+loadGame();
+return false;
+}
 
 const treasureImage = new Image();
 treasureImage.src = "images/treasure.PNG";
@@ -283,6 +284,28 @@ function updateMap() {
 
             if(x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
                 cellEl.classList.add("current");
+
+
+                //Arrow
+                 const arrow = document.createElement("div");
+                    arrow.className = "playerDir";
+                    
+                    switch(gameState.playerDirection) {
+                        case 0: // North
+                            arrow.textContent = "\u25B2";
+                            break;
+                        case 1: // East
+                            arrow.textContent = "\u25BA";
+                            break;
+                        case 2: // South
+                            arrow.textContent = "\u25BC";
+                            break;
+                        case 3: // West
+                            arrow.textContent = "\u25C4";
+                            break;
+                    }
+                    
+                    cellEl.appendChild(arrow);
 
             } else if (cell === 1) {
                 cellEl.classList.add("wall");
@@ -555,9 +578,13 @@ function loadGame() {
 
     gameState.inCombat = false;
     gameState.currentEnemy = null;
+    gameState.gameOver = false;
 
     combatMenu.classList.add("hidden");
     pauseMenu.classList.add("hidden");
+    gameOverMenu.classList.add("hidden");
+    
+    document.getElementById("map").classList.remove("hidden");
 
     showGameScreen();
     addMessage("Game Loaded");
@@ -602,13 +629,22 @@ function saveGame() {
 }
 
 function quitToMenu() {
+    if(!gameState.gameOver) {
     saveGame();
+    }
+
+    gameState.gameOver = false;
+    gameState.inCombat = false;
 
         gameScreen.classList.add("hidden");
         mainMenu.classList.remove("hidden");
         pauseMenu.classList.add("hidden");
         gameOverMenu.classList.add("hidden");
         victoryMenu.classList.add("hidden");
+        combatMenu.classList.add("hidden");
+
+
+        document.getElementById("map").classList.remove("hidden");
 
     checkSavedGame();
 }
@@ -701,6 +737,8 @@ function startCombat(position) {
     gameState.inCombat = true;
     combatMenu.classList.remove("hidden");
 
+    document.getElementById("map").classList.add("hidden");
+
     gameState.currentEnemy = {
         type: ["Goblin" , "Skeleton" , "Orc" , "Spider"][Math.floor(Math.random() * 4)] ,
         health: 30 + gameState.level * 10 ,
@@ -778,6 +816,8 @@ function endCombat() {
     gameState.inCombat = false;
     combatMenu.classList.add("hidden");
 
+    document.getElementById("map").classList.remove("hidden");
+
     const enemyPos = getDirection(gameState.playerDirection);
         if(enemyPos.x >= 0 && enemyPos.y >= 0 && enemyPos.x < gameState.dungeon[0].length && enemyPos.y < gameState.dungeon.length) {
             gameState.dungeon[enemyPos.y][enemyPos.x] = 0;
@@ -793,21 +833,69 @@ function playerDefeated() {
     updateHUD();
 
     if(gameState.lives <= 0) {
+        gameState.health = 0;
+        gameState.gameOver = true;
+
+        gameOverMenu.innerHTML = `
+            <h2>Game Over</h2>
+            <p>You Are Dead</p>
+            <button id="overMenu">Return to Main Menu</button>
+        `;
+        
+        document.getElementById("overMenu").addEventListener("click", function() {
+            
+            gameState.gameOver = false;
+            gameState.inCombat = false;
+            
+            gameScreen.classList.add("hidden");
+            gameOverMenu.classList.add("hidden");
+            combatMenu.classList.add("hidden");
+            
+            mainMenu.classList.remove("hidden");
+            document.getElementById("map").classList.remove("hidden");
+        });
+        
         gameOverMenu.classList.remove("hidden");
-        livesMessage.textContent = "Game Over";
-        document.getElementById("cont").disabled = true;
+
     } else {
+       
+        gameOverMenu.innerHTML = `
+            <h2>Game Over</h2>
+            <p>You Have ${gameState.lives} Live(s) Remaining</p>
+            <button id="continueAfterDeath">Continue</button>
+            <button id="quitAfterDeath">Return to Main Menu</button>
+        `;
+        
+        document.getElementById("continueAfterDeath").addEventListener("click", function() {
+
+            gameState.health = gameState.maxHealth;
+            gameOverMenu.classList.add("hidden");
+            
+            if(gameState.inCombat) {
+                gameState.inCombat = false;
+                combatMenu.classList.add("hidden");
+                document.getElementById("map").classList.remove("hidden");
+            }
+            updateHUD();
+        });
+        
+        document.getElementById("quitAfterDeath").addEventListener("click", function() {
+            
+            gameState.gameOver = false;
+            gameState.inCombat = false;
+            
+            gameScreen.classList.add("hidden");
+            gameOverMenu.classList.add("hidden");
+            combatMenu.classList.add("hidden");
+            
+            mainMenu.classList.remove("hidden");
+            document.getElementById("map").classList.remove("hidden");
+        });
+        
         gameOverMenu.classList.remove("hidden");
-        livesMessage.textContent = (`You Have ${gameState.lives} Live(s) Remaining`);
-        document.getElementById("cont").disabled = false;
     }
 }
 
-function continueDeath() {
-    gameState.health = gameState.maxHealth;
-    gameOverMenu.classList.add("hidden");
-    updateHUD();
-}
 
 //Level End
 
@@ -824,6 +912,8 @@ function nextLevel() {
     updateHUD();
     renderViews();
     addMessage(`You Reach Floor ${gameState.level}`);
+
+    saveGame();
 }
 
 function endGame() {

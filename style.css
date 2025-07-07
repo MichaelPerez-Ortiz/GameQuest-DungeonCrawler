@@ -379,6 +379,7 @@ body {
 
 .mapCell.current {
     background-color: #0a0;
+    position: relative;
 }
 
 .mapCell.wall {
@@ -434,6 +435,9 @@ body {
     left: 5px;
 }
 
+.playerDir{
+    color: rgb(10, 61, 10);
+}
 
 /* 3D Elements */
 
