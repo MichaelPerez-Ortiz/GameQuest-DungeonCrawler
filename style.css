@@ -64,6 +64,7 @@ body {
     background-color: #111;
     position: relative;
     padding: 1rem;
+    height: 100%;
     /* #c22828 */
 }
 
@@ -150,6 +151,9 @@ body {
         background-color: #c00;
 }
 
+#handedToggle {
+    display: none;
+}
 
 /* Blur */
 
@@ -684,11 +688,11 @@ body {
 
 /* Samsung Galaxy A13 5G */
 
-@media screen and (max-width: 412px) and (max-height: 915px) {
+@media screen and (max-width: 500px) and (max-height: 915px) {
     body {
         transform: scale(1.1);
         align-items: flex-start;
-        padding-top: 0.5rem;
+        padding-top: 2.5rem;
         min-height: 100vh;
     }
     
@@ -728,9 +732,14 @@ body {
         left: 29%;
     }
     
-    #lView,
+    #lView {
+        width: 29%;
+        transform: rotateY(40deg);
+    }
+
     #rView {
         width: 29%;
+        transform: rotateY(-40deg);
     }
     
     #hud {
@@ -749,6 +758,7 @@ body {
     #pauseBtn {
         padding: 0.4rem 0.6rem;
         font-size: 0.9rem;
+        margin-right: 4%;
     }
     
     #interface {
@@ -756,7 +766,7 @@ body {
     }
     
     #messageLog {
-        height: 75px;
+        height: 25px;
         font-size: 0.85rem;
         padding: 0.4rem;
     }
@@ -769,14 +779,22 @@ body {
     }
     
     #move {
-        padding: 15px;
+        padding: 20px;
         margin-top: 0.8rem;
+        display: flex;
+        flex-direction: row; 
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 20px;
+        position: relative;
+        margin-bottom: 0;
     }
     
     #dPad {
         width: 130px;
         height: 130px;
         padding: 22px;
+        flex-shrink: 0;
     }
     
     .padTop,
@@ -790,10 +808,17 @@ body {
         font-size: 0.85rem;
         padding: 0.7rem 0;
     }
+
     
     #map {
         padding: 0.4rem;
-        margin-top: 0.8rem;
+        margin-top: 0;
+        width: auto;
+        flex: 1;
+        max-width: 200px;
+        position: absolute;
+        top: 43%;
+        left:55%;
     }
     
     #map h3 {
@@ -830,6 +855,71 @@ body {
         margin: 0.4rem;
     }
 }
+
+/*left*/
+#lView .three-d-wall-side {
+    transform: rotateY(45deg) translateZ(0px) scale(1.5);
+}
+
+#lView .three-d-enemy-side {
+    transform: rotateY(55deg) translateZ(0px) scale(1.5);
+}
+
+#lView .three-d-item-side,
+#lView .three-d-exit-side {
+    transform: rotateY(45deg) translateZ(0px) scale(1.5);
+}
+
+/*right*/
+#rView .three-d-wall-side {
+    transform: rotateY(-45deg) translateZ(0px) scale(1.5);
+}
+
+#rView .three-d-enemy-side {
+    transform: rotateY(-55deg) translateZ(0px) scale(1.5);
+}
+
+#rView .three-d-item-side,
+#rView .three-d-exit-side {
+    transform: rotateY(-45deg) translateZ(0px) scale(1.5);
+}
+
+
+.three-d-treasure-side {
+    transform: scale(1.5); 
+}
+
+#handedToggle {
+    display: inline-block;
+}
+
+#pause #handedToggle {
+    background-color: #2a4d3a;
+    border: 2px solid #4a7c59;
+    font-size: 1.05rem;
+    width: 170px;
+    padding: 0.9rem 1.2rem;
+    margin: 0.4rem;
+}
+
+#pause #handedToggle:hover {
+    background-color: #3a5d4a;
+    border-color: #5a8c69;
+}
+
+#dPad.left-handed-mode {
+    position: absolute;
+    top: 56%;
+    right: 20px;
+}
+
+#map.left-handed-mode {
+    position: absolute;
+    top: 43%;
+    left: 20px !important;
+}
+
+
 
 /* Landscape */
 @media screen and (max-width: 915px) and (max-height: 412px) and (orientation: landscape) {

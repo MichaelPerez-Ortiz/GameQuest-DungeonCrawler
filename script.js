@@ -202,7 +202,7 @@ function generateDungeon() {
 
         gameState.dungeon[gameState.playerPosition.y][gameState.playerPosition.x] = 0;
 
-    if(gameState.level !== 5) {
+    if(gameState.level !== 1) {
         
         let exitX , exitY;
             do{
@@ -222,7 +222,7 @@ function generateDungeon() {
         markVisited(gameState.playerPosition.x , gameState.playerPosition.y);
 
             //Treasure Placement
-        if(gameState.level === 5) {
+        if(gameState.level === 1) {
             let chestX , chestY;
             do{
                 chestX = Math.floor(Math.random() * (finalSize - 2)) +1;
@@ -647,6 +647,58 @@ function quitToMenu() {
         document.getElementById("map").classList.remove("hidden");
 
     checkSavedGame();
+}
+
+
+let isLeftHanded = localStorage.getItem("handedToggle") === "left";
+document.addEventListener("DOMContentLoaded" , function() {
+    initializeHandedToggle();
+
+    const handedToggle = document.getElementById("handedToggle");
+    if(handedToggle) {
+        handedToggle.addEventListener("click" , toggleHandedToggle);
+    }
+});
+
+
+function initializeHandedToggle() {
+    const button = document.getElementById("handedToggle");
+    const dPad = document.getElementById("dPad")
+    const map = document.getElementById("map");
+
+    if(!button)
+        return;
+
+    if(isLeftHanded) {
+        button.textContent = "Mode: Left-Handed";
+        dPad.classList.add("left-handed-mode");
+        map.classList.add("left-handed-mode");
+    } else {
+        button.textContent = "Mode: Right-Handed";
+        dPad.classList.remove("left-handed-mode");
+        map.classList.remove("left-handed-mode");
+    }
+}
+
+
+
+function toggleHandedToggle() {
+    isLeftHanded = !isLeftHanded;
+    const button = document.getElementById("handedToggle");
+    const dPad = document.getElementById("dPad")
+    const map = document.getElementById("map");
+
+    if(isLeftHanded) {
+        button.textContent = "Mode: Left-Handed";
+        dPad.classList.add("left-handed-mode");
+        map.classList.add("left-handed-mode");
+        localStorage.setItem("handedToggle" , "left");
+    } else {
+        button.textContent = "Mode: Right-Handed";
+        dPad.classList.remove("left-handed-mode");
+        map.classList.remove("left-handed-mode");
+        localStorage.setItem("handedToggle" , "right");
+    }
 }
 
 
