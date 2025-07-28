@@ -202,7 +202,7 @@ function generateDungeon() {
 
         gameState.dungeon[gameState.playerPosition.y][gameState.playerPosition.x] = 0;
 
-    if(gameState.level !== 1) {
+    if(gameState.level !== 5) {
         
         let exitX , exitY;
             do{
@@ -222,7 +222,7 @@ function generateDungeon() {
         markVisited(gameState.playerPosition.x , gameState.playerPosition.y);
 
             //Treasure Placement
-        if(gameState.level === 1) {
+        if(gameState.level === 5) {
             let chestX , chestY;
             do{
                 chestX = Math.floor(Math.random() * (finalSize - 2)) +1;

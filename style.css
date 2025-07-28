@@ -704,6 +704,9 @@ body {
     #mainMenu {
         padding: 1.2rem;
         margin: 0.5rem;
+         display: flex;
+        flex-direction: column;
+        margin-top: 20%;
     }
     
     #mainMenu h1 {
@@ -758,7 +761,7 @@ body {
     #pauseBtn {
         padding: 0.4rem 0.6rem;
         font-size: 0.9rem;
-        margin-right: 4%;
+        margin-right: 2%;
     }
     
     #interface {
@@ -779,7 +782,7 @@ body {
     }
     
     #move {
-        padding: 20px;
+        padding: 1%;
         margin-top: 0.8rem;
         display: flex;
         flex-direction: row; 
@@ -818,7 +821,7 @@ body {
         max-width: 200px;
         position: absolute;
         top: 43%;
-        left:55%;
+        right: 5%;
     }
     
     #map h3 {
@@ -854,7 +857,7 @@ body {
         padding: 0.9rem 1.2rem;
         margin: 0.4rem;
     }
-}
+
 
 /*left*/
 #lView .three-d-wall-side {
@@ -910,13 +913,16 @@ body {
 #dPad.left-handed-mode {
     position: absolute;
     top: 56%;
-    right: 20px;
+    right: 1%;
 }
 
 #map.left-handed-mode {
     position: absolute;
     top: 43%;
-    left: 20px !important;
+    left: 5% !important;
+}
+
+
 }
 
 
